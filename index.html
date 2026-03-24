@@ -12,10 +12,12 @@
             --text-main: #1d1d1f;
             --text-secondary: #86868b;
             --accent: #8b5e3c; /* Благородный кофейный */
+            --accent-hover: #a06b4a;
             --glass: rgba(255, 255, 255, 0.72);
             --transition-speed: 0.4s;
             --shadow-soft: 0 10px 30px rgba(0,0,0,0.08);
             --shadow-hover: 0 25px 50px rgba(0,0,0,0.15);
+            --card-hover-scale: 1.03;
         }
 
         * {
@@ -36,9 +38,10 @@
             line-height: 1.47;
             letter-spacing: -0.022em;
             position: relative;
+            overflow-x: hidden;
         }
 
-        /* Прогресс-бар чтения */
+        /* Прогресс-бар чтения с улучшенной анимацией */
         body::after {
             content: '';
             position: fixed;
@@ -50,6 +53,12 @@
             z-index: 99999;
             transition: width 0.1s linear;
             box-shadow: 0 0 10px rgba(139, 94, 60, 0.3);
+            animation: pulseGlow 2s infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 10px rgba(139, 94, 60, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(139, 94, 60, 0.6); }
         }
 
         .container {
@@ -58,7 +67,7 @@
             padding: 0 22px;
         }
 
-        /* Навигация (Glassmorphism) */
+        /* Улучшенная навигация с анимированным фоном */
         header {
             position: fixed;
             top: 0;
@@ -68,6 +77,7 @@
             backdrop-filter: saturate(180%) blur(20px);
             z-index: 9999;
             border-bottom: 1px solid rgba(0,0,0,0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         nav {
@@ -86,6 +96,7 @@
             letter-spacing: -0.5px;
             position: relative;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
         }
 
         .logo::after {
@@ -95,23 +106,48 @@
             top: 50%;
             transform: translateY(-50%);
             opacity: 0;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             font-size: 16px;
+            animation: steamRise 3s infinite;
+        }
+
+        @keyframes steamRise {
+            0% { transform: translateY(-50%) rotate(0deg); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-60%) rotate(5deg); opacity: 0; }
         }
 
         .logo:hover {
-            transform: scale(1.05);
+            transform: scale(1.08) rotate(1deg);
             color: var(--accent);
+            text-shadow: 0 0 20px rgba(139, 94, 60, 0.3);
         }
 
         .logo:hover::after {
             opacity: 1;
-            transform: translateY(-50%) translateX(-5px);
+            transform: translateY(-50%) translateX(-5px) rotate(2deg);
+            animation-play-state: paused;
         }
 
         .nav-links {
             display: flex;
             gap: 30px;
+            position: relative;
+        }
+
+        .nav-links::before {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), #0071e3);
+            transition: width 0.4s ease;
+        }
+
+        .nav-links:hover::before {
+            width: 100%;
         }
 
         .nav-links a {
@@ -119,19 +155,61 @@
             text-decoration: none;
             font-size: 12px;
             opacity: 0.8;
-            transition: opacity 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            padding: 10px 0;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), #0071e3);
+            transition: width 0.4s ease;
         }
 
         .nav-links a:hover {
             opacity: 1;
+            transform: translateY(-2px);
+            color: var(--accent);
         }
 
-        /* Hero Section */
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Улучшенный Hero Section с анимированным фоном */
         .hero {
             padding-top: 150px;
             padding-bottom: 100px;
             text-align: center;
             background: linear-gradient(180deg, #fff 0%, var(--secondary-bg) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Анимированные частицы в hero */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(139, 94, 60, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(139, 94, 60, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 40% 60%, rgba(0, 113, 227, 0.06) 0%, transparent 50%);
+            pointer-events: none;
+            animation: floatBackground 20s ease-in-out infinite;
+        }
+
+        @keyframes floatBackground {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(1deg); }
         }
 
         /* Анимации появления контента */
@@ -142,8 +220,12 @@
             letter-spacing: -0.005em;
             margin-bottom: 15px;
             opacity: 0;
-            transform: translateY(30px);
+            transform: translateY(40px);
             animation: fadeInUp 0.8s ease-out 0.2s forwards;
+            background: linear-gradient(135deg, var(--text-main), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .hero p {
@@ -152,38 +234,71 @@
             max-width: 600px;
             margin: 0 auto 35px;
             opacity: 0;
-            transform: translateY(30px);
+            transform: translateY(40px);
             animation: fadeInUp 0.8s ease-out 0.4s forwards;
         }
 
         .btn {
             opacity: 0;
-            transform: translateY(30px);
+            transform: translateY(40px);
             animation: fadeInUp 0.8s ease-out 0.6s forwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.6s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
         }
 
         .btn {
             display: inline-block;
-            background: #0071e3; /* Цвет кнопок Apple */
+            background: #0071e3;
             color: white;
             padding: 12px 25px;
             border-radius: 980px;
             font-size: 17px;
             font-weight: 400;
             text-decoration: none;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(0, 113, 227, 0.3);
         }
 
         .btn:hover {
             background: #0077ed;
-            transform: scale(1.02);
+            transform: scale(1.05) translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 113, 227, 0.4);
+            animation: pulseButton 0.6s ease-in-out;
+        }
+
+        @keyframes pulseButton {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+            100% { transform: scale(1.05); }
         }
 
         .btn-coffee {
             background: var(--accent);
+            box-shadow: 0 4px 15px rgba(139, 94, 60, 0.3);
         }
 
-        /* About Section */
+        .btn-coffee:hover {
+            background: var(--accent-hover);
+            box-shadow: 0 10px 25px rgba(139, 94, 60, 0.4);
+            transform: scale(1.05) translateY(-3px);
+        }
+
+        /* About Section с улучшенными анимациями */
         .section-padding {
             padding: 120px 0;
         }
@@ -192,7 +307,7 @@
             text-align: center;
             margin-bottom: 60px;
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(30px);
             animation: fadeInUp 0.8s ease-out 0.2s forwards;
         }
 
@@ -200,8 +315,29 @@
             font-size: 40px;
             font-weight: 600;
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(30px);
             animation: fadeInUp 0.8s ease-out 0.4s forwards;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-header h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), #0071e3);
+            border-radius: 2px;
+            opacity: 0;
+            animation: lineReveal 0.8s ease-out 0.6s forwards;
+        }
+
+        @keyframes lineReveal {
+            from { width: 0; opacity: 0; }
+            to { width: 60px; opacity: 1; }
         }
 
         /* Анимации для секции "О нас" */
@@ -211,7 +347,7 @@
             gap: 60px;
             align-items: center;
             opacity: 0;
-            transform: translateY(30px);
+            transform: translateY(40px);
             animation: fadeInUp 0.8s ease-out 0.2s forwards;
         }
 
@@ -219,8 +355,21 @@
             font-size: 19px;
             color: var(--text-secondary);
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(30px);
             animation: fadeInUp 0.8s ease-out 0.4s forwards;
+            position: relative;
+        }
+
+        .about-text::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+            opacity: 0;
+            animation: lineReveal 0.8s ease-out 0.6s forwards;
         }
 
         .about-image {
@@ -230,23 +379,41 @@
             border-radius: 28px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             opacity: 0;
-            transform: translateY(30px);
+            transform: translateY(40px);
             animation: fadeInUp 0.8s ease-out 0.6s forwards;
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .about-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.3) 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
         }
 
         .about-image:hover {
-            transform: scale(1.02) translateY(30px);
+            transform: scale(1.03) translateY(40px);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.2);
         }
 
-        /* Menu Section (3 Items) */
+        .about-image:hover::before {
+            opacity: 1;
+        }
+
+        /* Улучшенные карточки меню с продвинутыми анимациями */
         .menu-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 30px;
         }
 
-        /* Улучшенные карточки с анимациями */
         .card {
             background: var(--secondary-bg);
             padding: 40px;
@@ -254,14 +421,15 @@
             text-align: center;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             opacity: 0;
-            transform: translateY(40px);
+            transform: translateY(50px);
             box-shadow: var(--shadow-soft);
             cursor: pointer;
             position: relative;
             overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.05);
         }
 
-        /* Эффект глубины при наведении */
+        /* Анимированный градиентный фон при наведении */
         .card::before {
             content: '';
             position: absolute;
@@ -269,37 +437,75 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(180deg, rgba(255,255,255,0.1), transparent);
+            background: linear-gradient(135deg, rgba(139, 94, 60, 0.1), rgba(0, 113, 227, 0.1));
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+        }
+
+        /* Эффект "всплывающих" частиц */
+        .card::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: all 0.4s ease;
             pointer-events: none;
         }
 
         .card:hover {
-            transform: translateY(-15px) scale(1.02);
+            transform: translateY(-20px) scale(var(--card-hover-scale));
             box-shadow: var(--shadow-hover);
             background: #ffffff;
+            border-color: rgba(139, 94, 60, 0.2);
         }
 
         .card:hover::before {
             opacity: 1;
         }
 
-        /* Анимация изображений */
+        .card:hover::after {
+            width: 300px;
+            height: 300px;
+            opacity: 0.3;
+        }
+
+        /* Анимация изображений с эффектом "дыхания" */
         .card img {
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             filter: brightness(1);
+            animation: breathe 6s ease-in-out infinite;
         }
 
         .card:hover img {
-            transform: scale(1.05) rotate(0.5deg);
-            filter: brightness(1.05);
+            transform: scale(1.1) rotate(1deg);
+            filter: brightness(1.1) saturate(1.1);
+            animation-play-state: paused;
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
         }
 
         .card .icon {
             font-size: 40px;
             margin-bottom: 20px;
             display: block;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .card:hover .icon {
+            transform: scale(1.2) rotate(10deg);
+            color: var(--accent);
+            text-shadow: 0 10px 20px rgba(139, 94, 60, 0.3);
         }
 
         .card img {
@@ -308,26 +514,47 @@
             object-fit: cover;
             border-radius: 12px;
             margin-bottom: 20px;
+            transition: all 0.4s ease;
         }
 
         .card h3 {
             font-size: 24px;
             margin-bottom: 15px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .card:hover h3 {
+            color: var(--accent);
+            transform: translateY(-2px);
         }
 
         .card p {
             color: var(--text-secondary);
             font-size: 16px;
             margin-bottom: 20px;
+            transition: color 0.3s ease;
+        }
+
+        .card:hover p {
+            color: var(--text-main);
         }
 
         .card .price {
             font-weight: 600;
             font-size: 19px;
             color: var(--text-main);
+            transition: all 0.3s ease;
+            display: inline-block;
         }
 
-        /* Contacts Section */
+        .card:hover .price {
+            transform: scale(1.15) rotate(2deg);
+            color: var(--accent);
+            text-shadow: 0 4px 8px rgba(139, 94, 60, 0.3);
+        }
+
+        /* Contacts Section с анимациями */
         .contact {
             background-color: var(--secondary-bg);
             border-radius: 40px;
@@ -338,15 +565,42 @@
             flex-wrap: wrap;
             gap: 40px;
             opacity: 0;
-            transform: translateY(30px);
+            transform: translateY(40px);
             animation: fadeInUp 0.8s ease-out 0.2s forwards;
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: var(--shadow-soft);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(139, 94, 60, 0.05), rgba(0, 113, 227, 0.05));
+            opacity: 0;
+            transition: opacity 0.4s ease;
         }
 
         .contact:hover {
             transform: translateY(0);
             box-shadow: var(--shadow-hover);
+        }
+
+        .contact:hover::before {
+            opacity: 1;
+        }
+
+        .contact-item {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .contact-item:hover {
+            transform: translateY(-5px);
         }
 
         .contact-item h4 {
@@ -355,11 +609,33 @@
             color: var(--text-secondary);
             margin-bottom: 10px;
             letter-spacing: 0.1em;
+            position: relative;
+            display: inline-block;
+        }
+
+        .contact-item h4::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), #0071e3);
+            transition: width 0.4s ease;
+        }
+
+        .contact-item:hover h4::after {
+            width: 100%;
         }
 
         .contact-item p {
             font-size: 21px;
             font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .contact-item:hover p {
+            color: var(--accent);
         }
 
         footer {
@@ -369,13 +645,30 @@
             font-size: 12px;
             text-align: center;
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(30px);
             animation: fadeInUp 0.8s ease-out 0.2s forwards;
-            transition: color 0.3s ease;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), #0071e3);
+            transition: width 0.6s ease;
         }
 
         footer:hover {
             color: var(--text-main);
+        }
+
+        footer:hover::before {
+            width: 100px;
         }
 
         /* Адаптивность */
@@ -384,13 +677,18 @@
             .about-content { grid-template-columns: 1fr; }
             .menu-grid { grid-template-columns: 1fr; }
             .nav-links { display: none; }
+            
+            /* Адаптивные анимации */
+            .hero h1 { font-size: 32px; }
+            .card { transform: translateY(30px); }
+            .about-image { transform: translateY(30px); }
         }
 
-        /* Анимации */
+        /* Основные анимации */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
-                transform: translateY(30px);
+                transform: translateY(40px);
             }
             to {
                 opacity: 1;
@@ -401,7 +699,7 @@
         @keyframes fadeInLeft {
             from {
                 opacity: 0;
-                transform: translateX(-30px);
+                transform: translateX(-40px);
             }
             to {
                 opacity: 1;
@@ -412,7 +710,7 @@
         @keyframes fadeInRight {
             from {
                 opacity: 0;
-                transform: translateX(30px);
+                transform: translateX(40px);
             }
             to {
                 opacity: 1;
@@ -426,48 +724,18 @@
         }
 
         .logo:hover {
-            transform: scale(1.05);
-        }
-
-        .nav-links a {
-            position: relative;
-            padding-bottom: 4px;
-        }
-
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background-color: var(--accent);
-            transition: width 0.3s ease;
-        }
-
-        .nav-links a:hover::after {
-            width: 100%;
+            transform: scale(1.08) rotate(1deg);
         }
 
         /* Плавная смена цвета кнопок */
         .btn-coffee {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .btn-coffee:hover {
-            background: #a06b4a;
-            transform: scale(1.03) translateY(-2px);
-            box-shadow: 0 10px 25px rgba(139, 94, 60, 0.3);
-        }
-
-        /* Анимация цен */
-        .price {
-            transition: transform 0.3s ease, color 0.3s ease;
-        }
-
-        .card:hover .price {
-            transform: scale(1.1);
-            color: var(--accent);
+            background: var(--accent-hover);
+            transform: scale(1.05) translateY(-3px);
+            box-shadow: 0 10px 25px rgba(139, 94, 60, 0.4);
         }
 
         /* Эффект загрузки для изображений */
@@ -476,7 +744,87 @@
         }
 
         .card img:hover {
-            filter: saturate(1.2) contrast(1.1);
+            filter: saturate(1.2) contrast(1.1) brightness(1.05);
+        }
+
+        /* Анимация для цен */
+        .price {
+            transition: all 0.3s ease;
+        }
+
+        .card:hover .price {
+            transform: scale(1.15) rotate(2deg);
+            color: var(--accent);
+            text-shadow: 0 4px 8px rgba(139, 94, 60, 0.3);
+        }
+
+        /* Специальные эффекты для карточек */
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.3s; }
+        .card:nth-child(3) { animation-delay: 0.5s; }
+
+        /* Эффект "плавающих" элементов */
+        .floating {
+            animation: floating 6s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Анимация для иконок */
+        .icon {
+            animation: iconFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-5px) rotate(5deg); }
+        }
+
+        /* Эффект "мерцания" для цен */
+        .price::after {
+            content: '✨';
+            position: absolute;
+            right: -20px;
+            top: 50%;
+            transform: translateY(-50%) scale(0);
+            opacity: 0;
+            transition: all 0.4s ease;
+            font-size: 12px;
+        }
+
+        .card:hover .price::after {
+            transform: translateY(-50%) scale(1);
+            opacity: 1;
+            animation: sparkle 0.6s ease-in-out;
+        }
+
+        @keyframes sparkle {
+            0% { transform: translateY(-50%) scale(0); opacity: 0; }
+            50% { transform: translateY(-50%) scale(1.5); opacity: 1; }
+            100% { transform: translateY(-50%) scale(1); opacity: 1; }
+        }
+
+        /* Эффект "тени" для карточек */
+        .card::shadow {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 20px;
+            background: radial-gradient(ellipse at center, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0) 70%);
+            filter: blur(10px);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: -1;
+        }
+
+        .card:hover::shadow {
+            opacity: 1;
         }
     </style>
 </head>
@@ -519,21 +867,21 @@
             </div>
             <div class="menu-grid">
                 <!-- Карточка 1 -->
-                <div class="card">
+                <div class="card floating">
                     <img src="istockphoto-1211610546-612x612.webp" alt="The Flat White">
                     <h3>The Flat White</h3>
                     <p>Математически точный баланс микропены и двойного ристретто.</p>
                     <span class="price">320 ₽</span>
                 </div>
                 <!-- Карточка 2 -->
-                <div class="card">
+                <div class="card floating" style="animation-delay: 0.8s;">
                     <span class="icon">🧊</span>
                     <h3>Cold Brew Air</h3>
                     <p>24 часа экстракции для достижения абсолютной чистоты вкуса.</p>
                     <span class="price">380 ₽</span>
                 </div>
                 <!-- Карточка 3 -->
-                <div class="card">
+                <div class="card floating" style="animation-delay: 1.2s;">
                     <img src="istockphoto-1130989231-612x612.webp" alt="Signature Set">
                     <h3>Signature Set</h3>
                     <p>Ваша любимая чашка кофе в паре с двумя пончиками дня.</p>
@@ -567,10 +915,10 @@
     </footer>
 
     <script>
-        // Анимации появления при прокрутке
+        // Анимации появления при прокрутке с улучшенными эффектами
         const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
+            threshold: 0.15,
+            rootMargin: '0px 0px -30px 0px'
         };
 
         const observer = new IntersectionObserver((entries) => {
@@ -578,12 +926,19 @@
                 if (entry.isIntersecting) {
                     entry.target.style.opacity = '1';
                     entry.target.style.transform = 'translateY(0)';
+                    
+                    // Дополнительная анимация для карточек
+                    if (entry.target.classList.contains('card')) {
+                        entry.target.style.animation = 'fadeInUp 0.6s ease-out forwards';
+                    }
                 }
             });
         }, observerOptions);
 
-        // Наблюдаем за карточками меню
-        document.querySelectorAll('.card').forEach(card => {
+        // Наблюдаем за карточками меню с задержками
+        const cards = document.querySelectorAll('.card');
+        cards.forEach((card, index) => {
+            card.style.animationDelay = `${0.1 + index * 0.2}s`;
             observer.observe(card);
         });
 
@@ -602,7 +957,7 @@
             observer.observe(element);
         });
 
-        // Плавная прокрутка к якорям
+        // Плавная прокрутка к якорям с улучшенной анимацией
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -612,80 +967,184 @@
                         behavior: 'smooth',
                         block: 'start'
                     });
+                    
+                    // Анимация кнопки при клике
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
                 }
             });
         });
 
-        // Анимация прогресс-бара чтения
+        // Анимация прогресс-бара чтения с улучшенным эффектом
         window.addEventListener('scroll', () => {
             const scrolled = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
             document.body.style.setProperty('--scroll-progress', scrolled + '%');
+            
+            // Анимация навигации при прокрутке
+            const header = document.querySelector('header');
+            const scrolledNav = window.pageYOffset;
+            
+            if (scrolledNav > 50) {
+                header.style.background = 'rgba(255, 255, 255, 0.98)';
+                header.style.boxShadow = '0 10px 30px rgba(0,0,0,0.1)';
+                header.style.transform = 'translateY(-2px)';
+            } else {
+                header.style.background = 'rgba(255, 255, 255, 0.72)';
+                header.style.boxShadow = 'none';
+                header.style.transform = 'translateY(0)';
+            }
         });
 
-        // Эффект параллакса для hero-секции
+        // Эффект параллакса для hero-секции с улучшенной анимацией
         window.addEventListener('scroll', () => {
             const scrolled = window.pageYOffset;
             const hero = document.querySelector('.hero');
             if (hero) {
-                hero.style.transform = `translateY(${scrolled * 0.5}px)`;
+                hero.style.transform = `translateY(${scrolled * 0.3}px)`;
+                
+                // Анимация текста в hero при прокрутке
+                const heroText = hero.querySelector('h1');
+                if (heroText) {
+                    heroText.style.transform = `translateY(${scrolled * 0.1}px)`;
+                    heroText.style.opacity = 1 - (scrolled * 0.001);
+                }
             }
         });
 
-        // Микро-анимации для кнопок
+        // Микро-анимации для кнопок с улучшенными эффектами
         const buttons = document.querySelectorAll('.btn');
         buttons.forEach(button => {
             button.addEventListener('mouseenter', () => {
-                button.style.transform = 'scale(1.05)';
+                button.style.transform = 'scale(1.08) translateY(-3px)';
+                button.style.boxShadow = button.classList.contains('btn-coffee') 
+                    ? '0 15px 35px rgba(139, 94, 60, 0.5)'
+                    : '0 15px 35px rgba(0, 113, 227, 0.5)';
             });
             
             button.addEventListener('mouseleave', () => {
                 button.style.transform = 'scale(1)';
+                button.style.boxShadow = button.classList.contains('btn-coffee') 
+                    ? '0 4px 15px rgba(139, 94, 60, 0.3)'
+                    : '0 4px 15px rgba(0, 113, 227, 0.3)';
             });
         });
 
-        // Анимация иконок при наведении
+        // Анимация иконок при наведении с улучшенными эффектами
         const icons = document.querySelectorAll('.icon');
         icons.forEach(icon => {
             icon.addEventListener('mouseenter', () => {
-                icon.style.transform = 'scale(1.2) rotate(5deg)';
+                icon.style.transform = 'scale(1.3) rotate(10deg) translateY(-5px)';
                 icon.style.color = '#8b5e3c';
-                icon.style.textShadow = '0 4px 8px rgba(139, 94, 60, 0.3)';
+                icon.style.textShadow = '0 6px 12px rgba(139, 94, 60, 0.4)';
+                icon.style.animation = 'none';
             });
             
             icon.addEventListener('mouseleave', () => {
-                icon.style.transform = 'scale(1)';
+                icon.style.transform = 'translateY(0) rotate(0deg)';
                 icon.style.color = '';
                 icon.style.textShadow = 'none';
+                icon.style.animation = 'iconFloat 4s ease-in-out infinite';
             });
-        });
-
-        // Плавное изменение фона навигации при прокрутке
-        window.addEventListener('scroll', () => {
-            const header = document.querySelector('header');
-            const scrolled = window.pageYOffset;
-            
-            if (scrolled > 50) {
-                header.style.background = 'rgba(255, 255, 255, 0.95)';
-                header.style.boxShadow = '0 10px 30px rgba(0,0,0,0.1)';
-            } else {
-                header.style.background = 'rgba(255, 255, 255, 0.72)';
-                header.style.boxShadow = 'none';
-            }
         });
 
         // Анимация для элементов навигации при наведении
         const navLinks = document.querySelectorAll('.nav-links a');
         navLinks.forEach(link => {
             link.addEventListener('mouseenter', () => {
-                link.style.transform = 'translateY(-2px)';
+                link.style.transform = 'translateY(-3px) scale(1.05)';
                 link.style.color = '#8b5e3c';
+                link.style.textShadow = '0 2px 4px rgba(139, 94, 60, 0.2)';
             });
             
             link.addEventListener('mouseleave', () => {
-                link.style.transform = 'translateY(0)';
+                link.style.transform = 'translateY(0) scale(1)';
                 link.style.color = '';
+                link.style.textShadow = 'none';
             });
         });
+
+        // Эффект "дыхания" для карточек
+        const menuCards = document.querySelectorAll('.card');
+        menuCards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-25px) scale(1.04)';
+                card.style.boxShadow = '0 35px 70px rgba(0,0,0,0.2)';
+                
+                // Анимация изображения
+                const img = card.querySelector('img');
+                if (img) {
+                    img.style.transform = 'scale(1.15) rotate(1.5deg)';
+                    img.style.filter = 'brightness(1.15) saturate(1.15)';
+                }
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(-20px) scale(1.03)';
+                card.style.boxShadow = '0 25px 50px rgba(0,0,0,0.15)';
+                
+                const img = card.querySelector('img');
+                if (img) {
+                    img.style.transform = 'scale(1.1) rotate(1deg)';
+                    img.style.filter = 'brightness(1.1) saturate(1.1)';
+                }
+            });
+        });
+
+        // Анимация цен при наведении
+        const prices = document.querySelectorAll('.price');
+        prices.forEach(price => {
+            price.addEventListener('mouseenter', () => {
+                price.style.transform = 'scale(1.25) rotate(3deg) translateY(-3px)';
+                price.style.color = '#8b5e3c';
+                price.style.textShadow = '0 6px 12px rgba(139, 94, 60, 0.4)';
+            });
+            
+            price.addEventListener('mouseleave', () => {
+                price.style.transform = 'scale(1.15) rotate(2deg)';
+                price.style.color = '';
+                price.style.textShadow = 'none';
+            });
+        });
+
+        // Эффект "мерцания" для карточек
+        menuCards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                const price = card.querySelector('.price');
+                if (price) {
+                    price.style.animation = 'sparkle 0.5s ease-in-out';
+                }
+            });
+        });
+
+        // Анимация загрузки страницы
+        window.addEventListener('load', () => {
+            document.body.style.opacity = '1';
+            document.body.style.transition = 'opacity 0.5s ease-in';
+        });
+
+        // Эффект "плавающих" частиц в hero
+        const hero = document.querySelector('.hero');
+        if (hero) {
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.style.position = 'absolute';
+                particle.style.width = Math.random() * 4 + 2 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.background = `rgba(139, 94, 60, ${Math.random() * 0.3})`;
+                particle.style.borderRadius = '50%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animation = `floatBackground ${Math.random() * 10 + 10}s ease-in-out infinite`;
+                particle.style.opacity = '0';
+                hero.appendChild(particle);
+                
+                setTimeout(() => {
+                    particle.style.opacity = '1';
+                }, Math.random() * 1000);
+            }
+        }
     </script>
 </body>
 </html>
